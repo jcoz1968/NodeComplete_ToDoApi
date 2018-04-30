@@ -60,7 +60,10 @@ app.get('/todos/:id', (req, res) => {
    res.status(404).send();
   }
 
-  Todo.findById(id).then((todo) => {
+  Todo.findOne({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
     if (!todo) {
       res.status(404).send();
     }

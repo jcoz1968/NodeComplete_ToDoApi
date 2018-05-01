@@ -6,17 +6,18 @@ const {User} = require('./../../models/user');
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
+var tokenOne = jwt.sign({_id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString();
+var tokenTwo = jwt.sign({_id: userTwoId, access: 'auth'},  process.env.JWT_SECRET).toString();
+console.log(tokenOne);
+console.log(tokenTwo);
 
 const users = [{
   _id: userOneId,
-  email: 'andrew@example.com',
+  email: 'brenna@example.com',
   password: 'userOnePass',
   tokens: [{
     access: 'auth',
-    token: jwt.sign({
-      _id: userOneId,
-      access: 'auth'
-    }, 'abc123').toString()
+    token: tokenOne
   }]
 }, {
   _id: userTwoId,
@@ -24,7 +25,7 @@ const users = [{
   password: 'userTwoPass',
   tokens: [{
     access: 'auth',
-    token: jwt.sign({_id: userTwoId, access: 'auth'}, 'xyz123').toString()
+    token: tokenTwo
   }]
 }];
 
@@ -51,7 +52,9 @@ const populateUsers = (done) => {
     var userOne = new User(users[0]).save();
     var userTwo = new User(users[1]).save();
     return Promise.all([userOne, userTwo])
-  }).then(() => done());
+  }).then(() => done()).catch((e) => {
+    console.log(e);
+  });
 };
 
 module.exports = {todos, populateTodos, users, populateUsers};
